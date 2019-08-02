@@ -15,9 +15,11 @@ stdin.on('end', function () {
     stdout.write('\n');
 
     let db = openDb();
-    createTables(db);
-    insertWifis(db, res);
-    getWifis(db);
+    db.serialize(() => {
+        createTables(db);
+        insertWifis(db, res);
+        getWifis(db);    
+    });
     closeDb(db);
 });
 
