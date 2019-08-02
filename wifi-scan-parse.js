@@ -47,7 +47,7 @@ function iwlistParse(str) {
         }
 
         if (line.match(fields.mac)) {
-            if (mac in info) {
+            if (info.hasOwnProperty('mac')) {
                 cells.push(info);
             }
             info = {};
