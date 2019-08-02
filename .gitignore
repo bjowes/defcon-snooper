@@ -62,4 +62,4 @@ typings/
 
 .vscode
 iwlist.out
-db/
+snoop.db
