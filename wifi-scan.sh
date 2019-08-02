@@ -1,3 +1,4 @@
 #!/bin/bash
 
-sudo iwlist wlan0 scan | node wifi-scan-parse.js
+sudo iwlist wlan0 scan > iwlist.out
+node wifi-scan-parse.js < iwlist.out

@@ -10,7 +10,6 @@ stdin.on('data', function (chunk) {
 });
 
 stdin.on('end', function () {
-    stdout.write('End of STDIN\n');
     let res = iwlistParse(inputChunks.join());
     stdout.write(JSON.stringify(res));
     stdout.write('\n');
@@ -48,7 +47,9 @@ function iwlistParse(str) {
         }
 
         if (line.match(fields.mac)) {
-            cells.push(info);
+            if (mac in info) {
+                cells.push(info);
+            }
             info = {};
         }
 
