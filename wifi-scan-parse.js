@@ -13,6 +13,12 @@ stdin.on('end', function () {
     let res = iwlistParse(inputChunks.join());
     stdout.write(JSON.stringify(res));
     stdout.write('\n');
+
+    let db = openDb();
+    createTables(db);
+    insertWifis(db, res);
+    getWifis(db);
+    closeDb(db);
 });
 
 function iwlistParse(str) {
@@ -24,7 +30,7 @@ function iwlistParse(str) {
     var fields = {
         'mac' : /^Cell \d+ - Address: (.*)/,
         'ssid' : /^ESSID:"(.*)"/,
-        'protocol' : /^Protocol:(.*)/,
+        'protocol' : /^IE: IEEE 802.11i\/(.*)/,
         'mode' : /^Mode:(.*)/,
         'frequency' : /^Frequency:(.*)/,
         'encryption_key' : /Encryption key:(.*)/,
@@ -63,3 +69,27 @@ function iwlistParse(str) {
     return cells;
 }
  
+const sqlite3 = require('sqlite3').verbose();
+
+function openDb() {
+    return new sqlite3.Database(':memory:');
+}
+function createTables(db) {
+    db.run("CREATE TABLE IF NOT EXISTS wifi (id INTEGER PRIMARY KEY, timestamp NUMERIC, ssid TEXT, mac TEXT, protocol TEXT, mode TEXT, frequency TEXT, encryption_key TEXT, bitrates TEXT, quality TEXT, signal_level TEXT)");
+}
+function insertWifis(db, cells) {
+    let now = Math.round(new Date().getTime() / 1000);
+    let stmt = db.prepare("INSERT INTO wifi (timestamp, ssid, mac, protocol, mode, frequency, encryption_key, bitrates, quality, signal_level) VALUES (?,?,?,?,?,?,?,?,?,?)");
+    cells.forEach(info => {
+        stmt.run(now, info.ssid, info.mac, info.procotol, info.mode, info.frequency, info.encryption_key, info.bitrates, info.quality, info.signal_level);
+    });
+    stmt.finalize();  
+}
+function getWifis(db) {
+    db.each("SELECT id, timestamp, ssid, mac FROM wifi", function(err, row) {
+        console.log(row.id + ": " + row.timestamp + ", " + row.ssid + ", " + row.mac);
+    });  
+}
+function closeDb(db) {
+    db.close();
+}

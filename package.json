@@ -1,0 +1,22 @@
+{
+  "name": "defcon-snooper",
+  "version": "0.0.1",
+  "description": "Wifi name monitor",
+  "main": "wifi-scan-parse.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bjowes/defcon-snooper.git"
+  },
+  "author": "Björn Weström",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bjowes/defcon-snooper/issues"
+  },
+  "homepage": "https://github.com/bjowes/defcon-snooper#readme",
+  "dependencies": {
+    "sqlite3": "^4.0.9"
+  }
+}
