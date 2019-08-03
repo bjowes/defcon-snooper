@@ -22,7 +22,9 @@ function scanWifiNetworks() {
           // node couldn't execute the command
           debug.log(err);
           throw err;
-        }      
+        }
+        console.log('stdout: ' + stdout);      
+        console.log('stderr: ' + stderr);      
         return stdout;
     });         
 }
