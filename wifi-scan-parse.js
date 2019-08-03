@@ -7,45 +7,23 @@ const { execSync } = require('child_process');
 function scanWifiNetworksAndInsert() {
     //let iwlistStr = scanWifiNetworks();
     console.log('up')
-    execSync('ip link set wlan0 up', (err, stdout, stderr) => {
-        if (err) {
-            // node couldn't execute the command
-            debug(err);
-            throw err;
-          }
-    });
+    execSync('ip link set wlan0 up');
 
     console.log('scan')
-    execSync('iwlist wlan0 scan', (err, stdout, stderr) => {
-        if (err) {
-          // node couldn't execute the command
-          console.log('err', err);
-          debug(err);
-          throw err;
-        }
-        console.log('stdout', stdout);
-        console.log('stderr', stderr);
-        let iwlistStr = stdout;
-        let iwlist = iwlistParse(iwlistStr);
-        debug(JSON.stringify(iwlist));
-        console.log(JSON.stringify(iwlist));
-        let db = openDb();
-        db.serialize(() => {
-            createTables(db);
-            insertWifis(db, iwlist);
-        });
-        closeDb(db);
+    let iwlistStr = execSync('iwlist wlan0 scan');
+    let iwlist = iwlistParse(iwlistStr);
+    debug(JSON.stringify(iwlist));
+    console.log(JSON.stringify(iwlist));
+    let db = openDb();
+    db.serialize(() => {
+        createTables(db);
+        insertWifis(db, iwlist);
     });
+    closeDb(db);
     
     console.log('down')
 
-    execSync('ip link set wlan0 down', (err, stdout, stderr) => {
-        if (err) {
-            // node couldn't execute the command
-            debug(err);
-            throw err;
-          }
-    });
+    execSync('ip link set wlan0 down');
 }
 
 function getWifisFromDb() {

@@ -14,13 +14,9 @@ function connected() {
 }
 
 function uploadToDropbox() {
-    execSync('/home/bjowes/Dropbox-Uploader/dropbox_uploader.sh upload /home/bjowes/defcon-snooper/snoop.db snoop.db', (err, stdout, stderr) => {
-        if (err) {
-            // node couldn't execute the command
-            debug(err);
-            throw err;
-          }
-    });
+    let res = execSync('/home/bjowes/Dropbox-Uploader/dropbox_uploader.sh upload /home/bjowes/defcon-snooper/snoop.db snoop.db');
+    console.log(res);
+    debug(res);
 }
 
 function resultPush() {
