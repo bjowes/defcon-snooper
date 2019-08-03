@@ -5,11 +5,8 @@ const { execSync } = require('child_process');
 
 
 function scanWifiNetworksAndInsert() {
-    //let iwlistStr = scanWifiNetworks();
-    console.log('up')
     execSync('ip link set wlan0 up');
 
-    console.log('scan')
     let iwlistStr = execSync('iwlist wlan0 scan').toString();
     let iwlist = iwlistParse(iwlistStr);
     debug(JSON.stringify(iwlist));
@@ -21,8 +18,6 @@ function scanWifiNetworksAndInsert() {
     });
     closeDb(db);
     
-    console.log('down')
-
     execSync('ip link set wlan0 down');
 }
 
