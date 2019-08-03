@@ -10,7 +10,7 @@ function scanWifiNetworksAndInsert() {
     let iwlistStr = execSync('iwlist wlan0 scan').toString();
     let iwlist = iwlistParse(iwlistStr);
     debug(JSON.stringify(iwlist));
-    console.log(JSON.stringify(iwlist));
+    //console.log(JSON.stringify(iwlist));
     let db = openDb();
     db.serialize(() => {
         createTables(db);

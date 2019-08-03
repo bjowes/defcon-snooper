@@ -1,12 +1,12 @@
 
 
-const wifiScanInterval = 15 * 1000;
+const wifiScanInterval = 60 * 1000;
 const wifiScan = require('./wifi-scan-parse');
 const resultPush = require('./result-push');
 let scanCount = 1;
 
 wifiScan.scanWifiNetworksAndInsert();
-wifiScan.getWifisFromDb();
+//wifiScan.getWifisFromDb();
 resultPush.resultPush();
 
 setInterval(() => {
