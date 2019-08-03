@@ -6,6 +6,7 @@ const resultPush = require('./result-push');
 let scanCount = 1;
 
 wifiScan.scanWifiNetworksAndInsert();
+wifiScan.getWifisFromDb();
 resultPush.resultPush();
 
 setInterval(() => {
