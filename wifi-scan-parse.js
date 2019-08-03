@@ -22,6 +22,8 @@ function scanWifiNetworksAndInsert() {
           debug(err);
           throw err;
         }
+        console.log('stdout', stdout);
+        console.log('stderr', stderr);
         let iwlistStr = stdout;
         let iwlist = iwlistParse(iwlistStr);
         debug(JSON.stringify(iwlist));
