@@ -1,27 +1,39 @@
-var stdin = process.stdin,
-    stdout = process.stdout,
-    inputChunks = [];
 
-stdin.resume();
-stdin.setEncoding('utf8');
+const sqlite3 = require('sqlite3').verbose();
+const debug = require('debug')('defcon-snoop');
+const { exec } = require('child_process');
 
-stdin.on('data', function (chunk) {
-    inputChunks.push(chunk);
-});
 
-stdin.on('end', function () {
-    let res = iwlistParse(inputChunks.join());
-    stdout.write(JSON.stringify(res));
-    stdout.write('\n');
-
+function scanWifiNetworksAndInsert() {
+    let iwlistStr = scanWifiNetworks();
+    let iwlist = iwlistParse(iwlistStr);
+    debug.log(JSON.stringify(iwlist));
     let db = openDb();
     db.serialize(() => {
         createTables(db);
-        insertWifis(db, res);
+        insertWifis(db, iwlist);
+    });
+    closeDb(db);
+}
+
+function scanWifiNetworks() {
+    exec('iwlist wlan0 scan', (err, stdout, stderr) => {
+        if (err) {
+          // node couldn't execute the command
+          debug.log(err);
+          throw err;
+        }      
+        return stdout;
+    });         
+}
+
+function getWifisFromDb() {
+    let db = openDb();
+    db.serialize(() => {
         getWifis(db);    
     });
     closeDb(db);
-});
+}
 
 function iwlistParse(str) {
     var out = str.replace(/^\s+/mg, '');
@@ -71,7 +83,6 @@ function iwlistParse(str) {
     return cells;
 }
  
-const sqlite3 = require('sqlite3').verbose();
 
 function openDb() {
     return new sqlite3.Database('./snoop.db');
@@ -95,3 +106,8 @@ function getWifis(db) {
 function closeDb(db) {
     db.close();
 }
+
+module.exports = [
+    scanWifiNetworksAndInsert,
+    getWifisFromDb
+];
