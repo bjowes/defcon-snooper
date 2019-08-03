@@ -10,7 +10,7 @@ function scanWifiNetworksAndInsert() {
     execSync('ip link set wlan0 up');
 
     console.log('scan')
-    let iwlistStr = execSync('iwlist wlan0 scan');
+    let iwlistStr = execSync('iwlist wlan0 scan').toString();
     let iwlist = iwlistParse(iwlistStr);
     debug(JSON.stringify(iwlist));
     console.log(JSON.stringify(iwlist));

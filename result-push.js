@@ -14,7 +14,7 @@ function connected() {
 }
 
 function uploadToDropbox() {
-    let res = execSync('/home/bjowes/Dropbox-Uploader/dropbox_uploader.sh upload /home/bjowes/defcon-snooper/snoop.db snoop.db');
+    let res = execSync('/home/bjowes/Dropbox-Uploader/dropbox_uploader.sh upload /home/bjowes/defcon-snooper/snoop.db snoop.db').toString();
     console.log(res);
     debug(res);
 }
