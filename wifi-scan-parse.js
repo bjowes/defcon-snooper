@@ -19,6 +19,7 @@ function scanWifiNetworksAndInsert() {
     execSync('iwlist wlan0 scan', (err, stdout, stderr) => {
         if (err) {
           // node couldn't execute the command
+          console.log('err', err);
           debug(err);
           throw err;
         }
