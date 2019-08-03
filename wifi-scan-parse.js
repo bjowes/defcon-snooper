@@ -107,7 +107,7 @@ function closeDb(db) {
     db.close();
 }
 
-module.exports = [
+module.exports = {
     scanWifiNetworksAndInsert,
     getWifisFromDb
-];
+};
