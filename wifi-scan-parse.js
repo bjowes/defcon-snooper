@@ -5,15 +5,26 @@ const { exec } = require('child_process');
 
 
 function scanWifiNetworksAndInsert() {
-    let iwlistStr = scanWifiNetworks();
-    let iwlist = iwlistParse(iwlistStr);
-    debug.log(JSON.stringify(iwlist));
-    let db = openDb();
-    db.serialize(() => {
-        createTables(db);
-        insertWifis(db, iwlist);
-    });
-    closeDb(db);
+    //let iwlistStr = scanWifiNetworks();
+    exec('iwlist wlan0 scan', (err, stdout, stderr) => {
+        if (err) {
+          // node couldn't execute the command
+          debug.log(err);
+          throw err;
+        }
+        let iwlistStr = stdout;
+        let iwlist = iwlistParse(iwlistStr);
+        debug.log(JSON.stringify(iwlist));
+        let db = openDb();
+        db.serialize(() => {
+            createTables(db);
+            insertWifis(db, iwlist);
+        });
+        closeDb(db);
+    
+        console.log('stdout: ' + stdout);      
+        console.log('stderr: ' + stderr);      
+    });         
 }
 
 function scanWifiNetworks() {
