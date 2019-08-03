@@ -1,12 +1,20 @@
 
 const sqlite3 = require('sqlite3').verbose();
 const debug = require('debug')('defcon-snoop');
-const { exec } = require('child_process');
+const { execSync } = require('child_process');
 
 
 function scanWifiNetworksAndInsert() {
     //let iwlistStr = scanWifiNetworks();
-    exec('iwlist wlan0 scan', (err, stdout, stderr) => {
+    execSync('ifup wlan0', (err, stdout, stderr) => {
+        if (err) {
+            // node couldn't execute the command
+            debug(err);
+            throw err;
+          }
+    });
+
+    execSync('iwlist wlan0 scan', (err, stdout, stderr) => {
         if (err) {
           // node couldn't execute the command
           debug(err);
@@ -21,34 +29,15 @@ function scanWifiNetworksAndInsert() {
             insertWifis(db, iwlist);
         });
         closeDb(db);
+    });
     
-        console.log('stdout: ' + stdout);      
-        console.log('stderr: ' + stderr);      
-    });         
-}
-
-function scanWifiNetworks() {
-    exec('ls', (err, stdout, stderr) => {
+    execSync('ifdown wlan0', (err, stdout, stderr) => {
         if (err) {
-          // node couldn't execute the command
-          debug(err);
-          throw err;
-        }
-        console.log('stdout: ' + stdout);      
-        console.log('stderr: ' + stderr);      
-        //return stdout;
-    });         
-
-    exec('iwlist wlan0 scan', (err, stdout, stderr) => {
-        if (err) {
-          // node couldn't execute the command
-          debug(err);
-          throw err;
-        }
-        console.log('stdout: ' + stdout);      
-        console.log('stderr: ' + stderr);      
-        return stdout;
-    });         
+            // node couldn't execute the command
+            debug(err);
+            throw err;
+          }
+    });
 }
 
 function getWifisFromDb() {
