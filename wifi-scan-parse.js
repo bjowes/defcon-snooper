@@ -17,6 +17,17 @@ function scanWifiNetworksAndInsert() {
 }
 
 function scanWifiNetworks() {
+    exec('ls', (err, stdout, stderr) => {
+        if (err) {
+          // node couldn't execute the command
+          debug.log(err);
+          throw err;
+        }
+        console.log('stdout: ' + stdout);      
+        console.log('stderr: ' + stderr);      
+        //return stdout;
+    });         
+
     exec('iwlist wlan0 scan', (err, stdout, stderr) => {
         if (err) {
           // node couldn't execute the command
