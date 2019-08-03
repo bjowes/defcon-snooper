@@ -6,6 +6,7 @@ const { execSync } = require('child_process');
 
 function scanWifiNetworksAndInsert() {
     //let iwlistStr = scanWifiNetworks();
+    console.log('up')
     execSync('ip link set wlan0 up', (err, stdout, stderr) => {
         if (err) {
             // node couldn't execute the command
@@ -14,6 +15,7 @@ function scanWifiNetworksAndInsert() {
           }
     });
 
+    console.log('scan')
     execSync('iwlist wlan0 scan', (err, stdout, stderr) => {
         if (err) {
           // node couldn't execute the command
@@ -32,6 +34,8 @@ function scanWifiNetworksAndInsert() {
         closeDb(db);
     });
     
+    console.log('down')
+
     execSync('ip link set wlan0 down', (err, stdout, stderr) => {
         if (err) {
             // node couldn't execute the command
