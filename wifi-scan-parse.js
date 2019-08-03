@@ -23,6 +23,7 @@ function scanWifiNetworksAndInsert() {
         let iwlistStr = stdout;
         let iwlist = iwlistParse(iwlistStr);
         debug(JSON.stringify(iwlist));
+        console.log(JSON.stringify(iwlist));
         let db = openDb();
         db.serialize(() => {
             createTables(db);
