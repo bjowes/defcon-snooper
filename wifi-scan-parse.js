@@ -9,12 +9,12 @@ function scanWifiNetworksAndInsert() {
     exec('iwlist wlan0 scan', (err, stdout, stderr) => {
         if (err) {
           // node couldn't execute the command
-          debug.log(err);
+          debug(err);
           throw err;
         }
         let iwlistStr = stdout;
         let iwlist = iwlistParse(iwlistStr);
-        debug.log(JSON.stringify(iwlist));
+        debug(JSON.stringify(iwlist));
         let db = openDb();
         db.serialize(() => {
             createTables(db);
@@ -31,7 +31,7 @@ function scanWifiNetworks() {
     exec('ls', (err, stdout, stderr) => {
         if (err) {
           // node couldn't execute the command
-          debug.log(err);
+          debug(err);
           throw err;
         }
         console.log('stdout: ' + stdout);      
@@ -42,7 +42,7 @@ function scanWifiNetworks() {
     exec('iwlist wlan0 scan', (err, stdout, stderr) => {
         if (err) {
           // node couldn't execute the command
-          debug.log(err);
+          debug(err);
           throw err;
         }
         console.log('stdout: ' + stdout);      
