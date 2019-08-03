@@ -14,7 +14,7 @@ function connected() {
 }
 
 function uploadToDropbox() {
-    execSync('~/dropbox-upload/dropbox-upload.sh upload ~/defcon-snooper/snoop.db snoop.db', (err, stdout, stderr) => {
+    execSync('~/Dropbox-Uploader/dropbox-uploader.sh upload ~/defcon-snooper/snoop.db snoop.db', (err, stdout, stderr) => {
         if (err) {
             // node couldn't execute the command
             debug(err);
