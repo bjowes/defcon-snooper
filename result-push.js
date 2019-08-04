@@ -1,5 +1,6 @@
 const debug = require('debug')('defcon-snoop');
 const { execSync } = require('child_process');
+const dns = require('dns');
 
 function activateWifi() {
 
@@ -10,7 +11,15 @@ function disableWifi() {
 }
 
 function connected() {
-    return true;
+    dns.resolve('www.google.com', function(err) {
+        if (err) {
+           console.log("No connection");
+           return false;
+        } else {
+           console.log("Connected to internet");
+           return true;
+        }
+    });
 }
 
 function uploadToDropbox() {
@@ -20,11 +29,15 @@ function uploadToDropbox() {
 }
 
 function resultPush() {
-    activateWifi();
-    if (connected()) {
-        uploadToDropbox();
+    try {
+        activateWifi();
+        if (connected()) {
+            uploadToDropbox();
+        }
+        disableWifi();
+    } catch (err) {
+        console.error(err);
     }
-    disableWifi();
 }
 
 module.exports = {

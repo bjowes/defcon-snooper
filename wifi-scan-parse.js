@@ -5,20 +5,24 @@ const { execSync } = require('child_process');
 
 
 function scanWifiNetworksAndInsert() {
-    execSync('ip link set wlan0 up');
+    try {
+        execSync('ip link set wlan0 up');
 
-    let iwlistStr = execSync('iwlist wlan0 scan').toString();
-    let iwlist = iwlistParse(iwlistStr);
-    debug(JSON.stringify(iwlist));
-    //console.log(JSON.stringify(iwlist));
-    let db = openDb();
-    db.serialize(() => {
-        createTables(db);
-        insertWifis(db, iwlist);
-    });
-    closeDb(db);
-    
-    execSync('ip link set wlan0 down');
+        let iwlistStr = execSync('iwlist wlan0 scan').toString();
+        let iwlist = iwlistParse(iwlistStr);
+        debug(JSON.stringify(iwlist));
+        //console.log(JSON.stringify(iwlist));
+        let db = openDb();
+        db.serialize(() => {
+            createTables(db);
+            insertWifis(db, iwlist);
+        });
+        closeDb(db);
+        
+        execSync('ip link set wlan0 down');
+    } catch (err) {
+        console.error(err);
+    }
 }
 
 function getWifisFromDb() {
