@@ -18,6 +18,7 @@
   "homepage": "https://github.com/bjowes/defcon-snooper#readme",
   "dependencies": {
     "debug": "^4.1.1",
+    "dns-sync": "^0.2.0",
     "sqlite3": "^4.0.9"
   }
 }
