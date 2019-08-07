@@ -83,7 +83,7 @@ function iwlistParse(str) {
  
 
 function openDb() {
-    return new sqlite3.Database('./snoop.db');
+    return new sqlite3.Database('/home/bjowes/defcon-snooper/snoop.db');
 }
 function createTables(db) {
     db.run("CREATE TABLE IF NOT EXISTS wifi (id INTEGER PRIMARY KEY, timestamp NUMERIC, ssid TEXT, mac TEXT, protocol TEXT, mode TEXT, frequency TEXT, encryption_key TEXT, bitrates TEXT, quality TEXT, signal_level TEXT)");
