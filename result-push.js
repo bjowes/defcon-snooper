@@ -1,7 +1,7 @@
 const debug = require('debug')('defcon-snoop');
 const { execSync } = require('child_process');
 const dnsSync = require('dns-sync');
-const sleep = require('sleep');
+const sleep = require('./sleep');
 
 async function activateWifi() {
     try {
