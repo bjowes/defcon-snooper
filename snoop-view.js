@@ -1,7 +1,7 @@
 const sqlite3 = require('sqlite3').verbose();
 
 function openDb(filename) {
-    return new sqlite3.Database('/home/bjowes/defcon-snooper/' + filename);
+    return new sqlite3.Database(filename);
 }
 function createTables(db) {
     db.run("CREATE TABLE IF NOT EXISTS wifi (id INTEGER PRIMARY KEY, timestamp NUMERIC, ssid TEXT, mac TEXT, protocol TEXT, mode TEXT, frequency TEXT, encryption_key TEXT, bitrates TEXT, quality TEXT, signal_level TEXT)");
@@ -39,16 +39,20 @@ function getUniqueWifis(db) {
                 start_ts: row.start_ts,
                 encrypted: row.encryption_key
             };
+            let filtered = false;
             ssidFilters.forEach((filter, index) => {
                 if (filter.filter.test(row.ssid)) {
                     if (!filter.count) {
                         wifis.push(wifi);
+                        wifi.filter = filter;
                     }
+                    filtered = true;
                     filter.count++;
-                } else {
-                    wifis.push(wifi);
-                }
+                } 
             });
+            if (!filtered) {
+                wifis.push(wifi);
+            }
         });
 
         wifis.sort((a,b) => {/*console.log(a); console.log(b);*/ return a.place.name.localeCompare(b.place.name) || a.ssid.localeCompare(b.ssid) } )
@@ -70,6 +74,9 @@ function getUniqueWifis(db) {
             out += padTo(wifi.start_ts, 12);
             out += " SSID: " + padTo((wifi.ssid === '' ? '[Hidden SSID]' : wifi.ssid), 32);
             out += " encryption: " + wifi.encrypted;
+            if (wifi.filter) {
+                out += ", filtered: " + (wifi.filter.count - 1);
+            }
             console.log(out);
         });
         console.log('after')
@@ -161,12 +168,17 @@ function closeDb(db) {
 
 
 let ssidFilters = [
-    { filter: new RegExp(/WiFi Hotspot \d\d\d\d/), count: 0 }
+    { filter: new RegExp(/Hotspot[0-9a-fA-F]{4}/), count: 0 },
+    { filter: new RegExp(/DIRECT-[0-9a-fA-F]{2}-HP.*/), count: 0 },
+    { filter: new RegExp(/HP-Print-[0-9a-fA-F]{2}.*/), count: 0 },
+    { filter: new RegExp(/WiFi Hotspot \d\d\d\d/), count: 0 },
+    { filter: new RegExp(/YICarCam_[0-9a-fA-F]{6}/), count: 0 }
+    
 ];
 
-let db = openDb('snoop_complete.db');
+let db = openDb('/Users/bjowes/Dropbox/Apps/DefconSnoop/snoop_complete.db', sqlite3.OPEN_READONLY);
 //getWifis(db);
-getWifisByAccessPoint(db);
+//getWifisByAccessPoint(db);
 getUniqueWifis(db);
 closeDb(db);
-console.log(JSON.stringify(places));
+//console.log(JSON.stringify(places));
